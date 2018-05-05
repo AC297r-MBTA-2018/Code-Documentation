@@ -20,18 +20,12 @@ Rider-Segmentation-Full-App/
         data/
             cached_clusters/
                 hierarchical/
-                    'hierarchical clustering .csv results and .json scores'
                 non-hierarchical/
-                    'non-hierarchical clustering .csv results and .json scores'
             cached_features/
-                '.csv rider features by start month'
             cached_profiles/
-                '.csv cluster profiles by start month'
             input/
                 censue/
-                    'census data'
                 geojson/
-                    'data to draw the maps'
             report_models/
                 report_cnn.h5
         __init__.py
@@ -43,9 +37,6 @@ Rider-Segmentation-Full-App/
         visualization.py
 ```
 
+## Installation & Setup
 
-Therefore, we developed a flexible, reusable rider segmentation model on MBTA’s local buses and subway system that can group individuals according to their ridership patterns.
-
-## Installation
-
-## Usage
+## Usage & Examples
