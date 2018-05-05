@@ -19,9 +19,7 @@ This repo contains code documentation for both of our deliverables:
 |:--:|
 | ***Figure 1: Project Deliverables*** |
 
-## Code Package Structure
-
-The full package has the following structure:
+## Full Package Structure
 
 ```sh
 Rider-Segmentation-Full-App/
