@@ -39,35 +39,35 @@ Rider-Segmentation-Full-App/
 
 A brief description of each item:
 
-- `data` directory contains the input data files (i.e., US census data, geojson data which is used to draw maps) and output result files (i.e. extracted feature in `cached_features`, segmentation results in `cached_clusters`, profiled cluster summaries in `cached_profiles` and a trained CNN model to classify temporal patterns in `report_models`) .
+- **`data/` directory** contains the input data files (i.e., US census data, geojson data which is used to draw maps) and output result files (i.e. extracted feature in `cached_features`, segmentation results in `cached_clusters`, profiled cluster summaries in `cached_profiles` and a trained CNN model to classify temporal patterns in `report_models`) .
 
-- `config.py` module defines global constants (e.g., data path, file prefix, rider type dictionary) that are used in the other modules.
+- **`config.py` module** defines global constants (e.g., data path, file prefix, rider type dictionary) that are used in the other modules.
 
-- `feature.py` module extracts different sets of rider-level features ([details](https://ac297r-mbta-2018.github.io/Final-Report/feature.html)) from transaction-level data and save the extracted features in the `data/cached_features/` directory.
+- **`feature.py` module** extracts different sets of rider-level features ([details](https://ac297r-mbta-2018.github.io/Final-Report/feature.html)) from transaction-level data and save the extracted features in the `data/cached_features/` directory.
 
-- `segmentation.py` module implements the K-means and LDA clustering algorithm and save the rider features with its cluster assignment in the `data/cached_clusters/` directory.
+- **`segmentation.py` module** implements the K-means and LDA clustering algorithm and save the rider features with its cluster assignment in the `data/cached_clusters/` directory.
 
-- `profile.py` module aggregated the rider features by cluster assignments and generates a text summary that describes the cluster size, average number of trips, predicted rider type (by using the report.py module), weekday / weekend hours and the zip code associated with the most traffic for each cluster. The profiled clusters are saved in the `data/cached_profiles/` directory.
+- **`profile.py` module** aggregated the rider features by cluster assignments and generates a text summary that describes the cluster size, average number of trips, predicted rider type (by using the report.py module), weekday / weekend hours and the zip code associated with the most traffic for each cluster. The profiled clusters are saved in the `data/cached_profiles/` directory.
 
-- `report.py` module is called by `profile.py` to format the generated cluster description for each cluster and append this column of text to the profiled cluster data frame.
+- **`report.py` module** is called by `profile.py` to format the generated cluster description for each cluster and append this column of text to the profiled cluster data frame.
 
-- `visualization.py` module implements all types of visualization graphs in python.
+- **`visualization.py` module** implements all types of visualization graphs in python.
 
 ## Installation & Setup
 
-> Step 1: Download code from our [github](https://github.com/AC297r-MBTA-2018/Rider-Segmentation-Full-App)
+- Step 1: Download code from our [github](https://github.com/AC297r-MBTA-2018/Rider-Segmentation-Full-App)
 > ```
 > git clone https://github.com/AC297r-MBTA-2018/Rider-Segmentation-Full-App.git
 > ```
 
-> Step 2: Obtain AFC, ODX, stops and fare product data from MBTA
+- Step 2: Obtain AFC, ODX, stops and fare product data from MBTA
 > Note: We did not publish this data for security reasons.
 
-> Step 3: Preprocess data to form clean transaction records
+- Step 3: Preprocess data to form clean transaction records
 > - Merge AFC, ODX and fare product data
 > - Map each stop's (longitude, latitude) to zip code using Google Geoencoding API
 > - Filter out invalid transaction records (associated with MBTA employers or voided)
-> Note: We did not propose a fixed pipeline with specific codes for this step as these procedures need to be adapted depending on the obtained data's condition.
+> **Note**: We did not propose a fixed pipeline with specific codes for this step as these procedures need to be adapted depending on the obtained data's condition.
 
 
 ## Usage & Examples
