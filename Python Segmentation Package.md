@@ -64,11 +64,24 @@ A brief description of each item:
 > **Note**: We did not publish this data for security reasons.
 
 - Step 3: Preprocess data to form clean transaction records
-> **Note**: We did not propose a fixed pipeline with specific codes for this step as these procedures need to be adapted depending on the obtained data's condition.
+> **Note**: We did not propose a fixed pipeline with specific codes for this step as these procedures could be done in either SQL or python, depending on the actual data condition.
 > - Merge AFC, ODX and fare product data
 > - Map each stop's (longitude, latitude) to zip code using Google Geoencoding API
 > - Filter out invalid transaction records (associated with MBTA employers or voided)
 
+## Module Class Documentation
+
+### `features.py`
+
+### `segmentation.py`
+
+### `profile.py`
+
+### `report.py`
+
+### `visualization.py`
+
+### Train the CNN Classification model on Rider-Type
 
 ## Usage & Examples
 
