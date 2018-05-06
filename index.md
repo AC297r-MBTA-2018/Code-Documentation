@@ -70,6 +70,8 @@ Rider-Segmentation-Full-App/
         segmentation.py
         visualization.py
         []_driver.py
+        Manully_Label_Clusters.ipynb
+        Train_Report_Model.ipynb
         data/
             cached_clusters/
                 'cached clustering results' - not published
@@ -118,8 +120,13 @@ A brief item description for ```MBTAriderSegmentation```:
 
 - `[]_driver.py` files contain sample usage code for the indicated module (e.g. features_driver.py is sample code foe the features.py module). The only module without a driver.py is `report.py` because it is not directly used by users.
 
-- `data` directory contains the input data files from MBTA and external data sources (i.e., US census, MA geojson, MBTA geojson, MBTA AFC/ODX, MBTA fare product, MBTA stops) and output files from various modules in this package (i.e. extracted feature in `cached_features`, segmentation results in `cached_clusters`, profiled cluster summaries in `cached_profiles`, cached cluster geographical distribution visualizations in `cached_viz`, and a trained CNN model to classify temporal patterns in `report_models`).
+- `Manully_Label_Clusters.ipynb` notebook contains starter code to manually label clusters to train the auto report generator.
 
+- `Train_Report_Model.ipynb  notebook contains starter code to train the auto report generator.
+
+- `data` directory contains the input data files from MBTA and external data sources (i.e., US census, MA geojson, MBTA geojson, MBTA AFC/ODX, MBTA fare product, MBTA stops) and output files from various modules in this package (i.e. extracted feature in `cached_features`, segmentation results in `cached_clusters`, profiled cluster summaries in `cached_profiles`, cached cluster geographical distribution visualizations in `cached_viz`, and a trained CNN model to classify temporal patterns in `report_models`). 
+
+Note: the segmentation module creates subdirectories in the `cached_clusters` directory when saving the result. Based on the choice of pipeline, the results are saved in  `hierarchical/results` or `non-hierarchical/results` subdirectories. For reference, the segmentation module also saves the clustering Calinski-Harabaz scores of each algorithm (LDA and K-means) in `hierarchical/scores` or `non-hierarchical/scores` subdirectories. In addition, the profile module creates subdirectories in the `cached_profiles` directory when saving the result. The name of the subdirectory it creates is based on the starting month and duration. For instance, for a start month = '1701' and a duration = 1, the resulting subdirectory is '2017-Jan'; for the same start month and a duration = 2, the resulting subdirectory is '2017-Jan_to_2017-Feb'. 
 
 ## Installation
 
@@ -142,6 +149,4 @@ A brief item description for ```MBTAriderSegmentation```:
 > cd Rider-Segmentation-Full-App/
 > python3 MBTAdashboard/app.py
 > ```
-> Copy the local host link (http://0.0.0.0:5000/)
-
-> Open a browser and paste the local host link to view the dashboard
+> Copy and paste the local host link (http://0.0.0.0:5000/) in a browser to view the dashboard
