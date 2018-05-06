@@ -1,5 +1,5 @@
 theme: jekyll-theme-primer
-title: Home
+title: Documentation Overview
 description: Code documentation for MBTA rider segmentation package and dashboard
 baseurl:
 markdown: kramdown
