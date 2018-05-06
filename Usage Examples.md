@@ -1,5 +1,5 @@
 ---
-nav_include: 3
+nav_include: 2
 title: Usage & Examples
 ---
 
