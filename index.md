@@ -24,6 +24,17 @@ This repo contains code documentation for both of our deliverables:
 |:--:|
 | ***Figure 1: Project Deliverables*** |
 
+
+## [Github Organization](https://github.com/AC297r-MBTA-2018) Structure
+- **Rider-Segmentation-Full-App**: This is the code base for both the Python segmentation package and the app with full functionality (i.e. based on user input, the app is able to send clustering request to the Flask backend on a new data set or user-specified weights/duration that has not been cached. Disclaimer: The full input source is not available on Github for security reasons, and each new clustering request takes at least several hours.)
+- **Dashboard**: This is the static version of the full app that has limited functinality (The app is only able to display pre-ran monthly clustering results for Dec 2016 to Nov 2017 with equal weighting on temporal, geographical and ticket purchasing pattern.) The app is deployed as a Github page (https://ac297r-mbta-2018.github.io/Dashboard/).
+- **Final-Report**: This repository hosts the final report which is deployed as a Github page (https://ac297r-mbta-2018.github.io/Final-Report/).
+- **Code-Documentation**: This repository hosts the content of this code documentation which is deployed as a Github page (https://ac297r-mbta-2018.github.io/Code-Documentation/), *current page*.
+
+Note: The limtied Dashboard, Final Report and Code Documentation are linked via a navigation bar on respective Github pages.
+
+
+
 ## Full Package Structure
 
 The high-level functionality of this rider segmentation package is to group individual MBTA riders according to pattern-of-use dimensions. Our full package has the following structure:
@@ -36,7 +47,7 @@ Rider-Segmentation-Full-App/
         src/
             __init__.py
             json_generator_driver.py
-            util.py
+            utils.py
         static/
             css/
                 'custom css files for D3 visualization'
@@ -45,27 +56,10 @@ Rider-Segmentation-Full-App/
             js/
                 'custom javascript files for D3 visualization'
             lib/
-                'library files'
+                'javascript, css, and fonts library files'
         templates/
                 'html files'
     MBTAriderSegmentation/
-        data/
-            cached_clusters/
-                hierarchical/
-                    'hierarchical clustering .csv results and .json scores'
-                non-hierarchical/
-                    'non-hierarchical clustering .csv results and .json scores'
-            cached_features/
-                '.csv rider features by start month'
-            cached_profiles/
-                '.csv cluster profiles by start month'
-            input/
-                censue/
-                    'census data'
-                geojson/
-                    'data to draw the maps'
-            report_models/
-                report_cnn.h5
         __init__.py
         config.py
         features.py
@@ -73,23 +67,57 @@ Rider-Segmentation-Full-App/
         report.py
         segmentation.py
         visualization.py
+        []_driver.py
+        data/
+            cached_clusters/
+                'cached clustering results' - not published
+            cached_features/
+                'cached extracted rider-level pattern-of-use features' - not published
+            cached_profiles/
+                'cached cluster profiles'
+            cached_viz/
+                'cached cluster geographical distribution visualization from the visualization module'
+            input/
+                census/
+                    'census data'
+                geojson/
+                    'data to draw the maps'
+                afc_odx/
+                    'AFC/ODX data' - not published
+                fareprod/
+                    'Fare product data' - not published
+                stops/ 
+                    'MBTA Stops data' - not published       
+            report_models/
+                report_cnn.h5
+        
 ```
 
-A brief description of each item in ```MBTAriderSegmentation/```:
+A brief item description for ```MBTAdashboard```:
 
-- **`data/` directory** contains the input data files (i.e., US census data, geojson data which is used to draw maps) and output result files (i.e. extracted feature in `cached_features`, segmentation results in `cached_clusters`, profiled cluster summaries in `cached_profiles` and a trained CNN model to classify temporal patterns in `report_models`) .
+- `app.py` module handles the communications between the front-end dashboard and the back-end Python codes. This is based on the Flask platform.
+- `src` directory contains a `utils.py` which is the back-end engine of the dashboard and a `json_generator_driver.py` which generates static json files for use in the limited Github version of the dashboard.
+- `static` directory contains static css, javascript and image files for the dashboard.
+- `templates` directory contains html files to render the dashboard.
 
-- **`config.py` module** defines global constants (e.g., data path, file prefix, rider type dictionary) that are used in the other modules.
+A brief item description for ```MBTAriderSegmentation```:
 
-- **`feature.py` module** extracts different sets of rider-level features ([details](https://ac297r-mbta-2018.github.io/Final-Report/feature.html)) from transaction-level data and save the extracted features in the `data/cached_features/` directory.
+- `config.py` module sets global constants (e.g., data path, file prefix, rider type dictionary) that are used in the other modules.
 
-- **`segmentation.py` module** implements the K-means and LDA clustering algorithm and save the rider features with its cluster assignment in the `data/cached_clusters/` directory.
+- `features.py` module extracts different sets of rider-level features ([details](https://ac297r-mbta-2018.github.io/Final-Report/feature.html)) from transaction-level data and save the extracted features in the `data/cached_features/` directory.
 
-- **`profile.py` module** aggregated the rider features by cluster assignments and generates a text summary that describes the cluster size, average number of trips, predicted rider type (by using the report.py module), weekday / weekend hours and the zip code associated with the most traffic for each cluster. The profiled clusters are saved in the `data/cached_profiles/` directory.
+- `segmentation.py` module handles the actual rider segmentation procedure and saves the rider features with its cluster assignment in the `data/cached_clusters/` directory.
 
-- **`report.py` module** is called by `profile.py` to format the generated cluster description for each cluster. The column of generated summary texts is appended to the profiled cluster data frame.
+- `profile.py` module profiles the clusters by summarizing cluster pattern-of-use features, inferring cluster demographics distributions as well as calling `report.py` module to produce a short descriptive text for each cluster. The cluster profiles are saved in the `data/cached_profiles/` directory.
 
-- **`visualization.py` module** implements all types of visualization graphs in python.
+- `report.py` module handles automatic report generation. It is called by `profile.py`, and its results are appened as a an additional column to the cluster profiles data frame that is eventually saved in the `data/cached_profiles/` directory.
+
+- `visualization.py` module contains functions to generate various static visualizations to explore the clusters in python.
+
+- `[]_driver.py` files contain sample usage code for the indicated module (e.g. features_driver.py is sample code foe the features.py module). The only module without a driver.py is `report.py` because it is not directly used by users.
+
+- `data` directory contains the input data files from MBTA and external data sources (i.e., US census, MA geojson, MBTA geojson, MBTA AFC/ODX, MBTA fare product, MBTA stops) and output files from various modules in this package (i.e. extracted feature in `cached_features`, segmentation results in `cached_clusters`, profiled cluster summaries in `cached_profiles`, cached cluster geographical distribution visualizations in `cached_viz`, and a trained CNN model to classify temporal patterns in `report_models`). 
+
 
 ## Installation
 
@@ -113,4 +141,5 @@ A brief description of each item in ```MBTAriderSegmentation/```:
 > python3 MBTAdashboard/app.py
 > ```
 > Copy the local host link (http://0.0.0.0:5000/)
+
 > Open a browser and paste the local host link to view the dashboard
