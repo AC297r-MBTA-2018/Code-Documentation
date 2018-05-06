@@ -49,7 +49,7 @@ A brief description of each item:
 
 - **`profile.py` module** aggregated the rider features by cluster assignments and generates a text summary that describes the cluster size, average number of trips, predicted rider type (by using the report.py module), weekday / weekend hours and the zip code associated with the most traffic for each cluster. The profiled clusters are saved in the `data/cached_profiles/` directory.
 
-- **`report.py` module** is called by `profile.py` to format the generated cluster description for each cluster and append this column of text to the profiled cluster data frame.
+- **`report.py` module** is called by `profile.py` to format the generated cluster description for each cluster. The column of generated summary texts is appended to the profiled cluster data frame.
 
 - **`visualization.py` module** implements all types of visualization graphs in python.
 
