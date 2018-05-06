@@ -122,7 +122,7 @@ A brief item description for ```MBTAriderSegmentation```:
 
 - `Manully_Label_Clusters.ipynb` notebook contains starter code to manually label clusters to train the auto report generator.
 
-- `Train_Report_Model.ipynb  notebook contains starter code to train the auto report generator.
+- `Train_Report_Model.ipynb`  notebook contains starter code to train the auto report generator.
 
 - `data` directory contains the input data files from MBTA and external data sources (i.e., US census, MA geojson, MBTA geojson, MBTA AFC/ODX, MBTA fare product, MBTA stops) and output files from various modules in this package (i.e. extracted feature in `cached_features`, segmentation results in `cached_clusters`, profiled cluster summaries in `cached_profiles`, cached cluster geographical distribution visualizations in `cached_viz`, and a trained CNN model to classify temporal patterns in `report_models`). 
 
