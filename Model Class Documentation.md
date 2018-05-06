@@ -14,7 +14,7 @@ The ```feature.py``` module allows you to extract rider-level pattern-of-use fea
 
 ### Class ```DataLoader```
 
-- A ```DataLoader``` object first merges the joint AFC_ODX table, the stops table and fare product tables to form transaction records. The preprocessed transaction records are then passed to a ```FeatureExtractor``` object to extract the rider-level pattern-of-use features.
+A ```DataLoader``` object first merges the joint AFC_ODX table, the stops table and fare product tables to form transaction records. The preprocessed transaction records are then passed to a ```FeatureExtractor``` object to extract the rider-level pattern-of-use features.
 
 - **Attributes**:
   - start_month: a string representing the start month in the format of YYMM, e.g. '1710'
@@ -32,7 +32,7 @@ The ```feature.py``` module allows you to extract rider-level pattern-of-use fea
   - __init__(self, start_month, duration):
   - load(self):
 
-- Class ```FeatureExtractor```
+### Class ```FeatureExtractor```
 
 ## Rider Segmentation
 
