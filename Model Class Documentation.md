@@ -47,10 +47,10 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
   The second step is for further filtering in segmentaion model.
 
 - **Attributes**:
-  - start_month: a string representing the start month in the format of YYMM, e.g. '1710'
-  - duration: an integer representing the length of duration
-  - df_transaction: a DataFrame of preprocessed transaction records returned by a ```DataLoader``` object
-  - purchase_features: a list of ticket-purchasing types, ['tariff', 'usertype', 'servicebrand', 'zonecr']
+  - ```start_month```: a string representing the start month in the format of YYMM, e.g. '1710'
+  - ```duration```: an integer representing the length of duration
+  - ```df_transaction```: a DataFrame of preprocessed transaction records returned by a ```DataLoader``` object
+  - ```purchase_features```: a list of ticket-purchasing types, ['tariff', 'usertype', 'servicebrand', 'zonecr']
 
 - **Methods**:
   - ```__init__(self, start_month='1701', duration=1)```:
@@ -66,12 +66,12 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
     - return all sets of temporal features as a DataFrame
 
   - ```_extract_geographical_patterns(self)```:
-    - extract the [# trips originated in each zip code](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#geographical-patterns)
+    - extract the [# trips originated in each zip code](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#geographical-patterns), each with a column name prefix 'zipcode_'
     - return the geographical features as a DataFrame
 
   - ```_get_one_purchase_feature(self, feature)```:
     - argument ```feature```: one item from the ```purchase_features``` list
-    - extract the [# trips associated with the ticket purchasing dimension specified in ```feature```](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#ticket-purchasing-pattern)
+    - extract the [# trips associated with the ticket purchasing dimension specified in ```feature```](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#ticket-purchasing-pattern), each with a column name predix '{feature}_'
     - return one type of ticket purchasing features as a DataFrame
 
   - ```_extract_ticket_purchasing_patterns(self)```:
@@ -81,14 +81,14 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
   - ```_label_rider_by_trip_frequency(self, rider)```:
     - argument ```rider```: a row in the rider feature DataFrame
     - label riders by the their riding frequency specified in the 'total_num_trips' column
-      - 0: infrequent riders
-      - 1: less than or equal to 20-time/month riders:
-      - 2: more than 20-time/month rider
+      - 0: infrequent riders riders who ride less than 5 times per month
+      - 1: riders who ride less than or equal to 20 times per month
+      - 2: riders who ride more than 20 times per month
       - -1: others
     - return label
 
   - ```_label_commuter_rail_rider(self, rider)```:
-    - argument ```rider```: a row in the rider feature DataFrame
+    - argument ```rider```: a row in the rider features DataFrame
     - label commuter rail riders except for those coming from zone 1A as 'CR except zone 1A' and 'others' otherwise
     - return label
 
@@ -99,6 +99,29 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
     - return the concatenated rider features DataFrame
 
 ## Rider Segmentation
+
+### Class ```Segmentation```
+
+- **Attributes**:
+    - ```random_state```, ```max_iter```, ```tol```: attributes for initializing K-means
+    - ```start_month```: a string representing the start month in the format of YYMM, e.g. '1710'
+    - ```duration```: an integer representing the length of duration
+    - ```w_time_choice```: an integer from 0 to 100 to indicate the weight of temporal features as percentage
+    - ```N_riders```: number of riders in the rider features DataFrame
+    - ```time_feats```: a list of column name of all sets of temporal features
+    - ```geo_feats```: a list of column names of all geographical features
+    - ```purchase_feats```: a list of column names of all ticket-purchasing features
+    self.weekday_vs_weekend_feats = ['weekday', 'weekend']
+    - ```features```: a list of concatenated time, geo and ticket-purchasing features for non-hierarchical clustering
+    - ```features_layer_1```: a list of features used in the initial clustering step
+    - ```features_layer_2```: a list of features used in the final clustering step
+    - ```w_time```: weight for temporal patterns
+    - ```w_geo```: weight for geographical patterns
+    - ```w_purchase```: weight for purchase patterns
+    - ```w_week```: weight for weekend/weekday columns
+
+- **Methods**:
+
 
 ## Cluster Inference
 
