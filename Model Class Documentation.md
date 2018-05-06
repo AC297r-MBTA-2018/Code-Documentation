@@ -58,25 +58,25 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
     - get the preprocessed transaction DataFrame by initializing a ```DataLoader``` object
 
   - ```_extract_temporal_patterns(self)```: For each ```riderID```,
-    - extract the [168 hourly temporal patterns](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-1a-168-hourly-version), each with feature column name prefix 'hr_'
-    - extract the [weekend-vs-weekday trip counts](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-2-weekday-vs-weekend-total-counts), with feature column name 'weekday' and 'weekend'
-    - extract the [48 weekday hourly vs. weekend hourly temporal patterns](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-1b-48-weekday-hourly-vs-weekend-hourly-version), each with feature column name prefix 'wkday_24_'
-    - extract the [time flexibility score](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-3-time-flexibility-score), with feature column name 'flex_wkday_24' and 'flex_wkend_24'
-    - extract the [most frequent trip hours](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-4-most-frequent-trip-hours), with feature column name 'max_wkday_24_1', 'max_wkday_24_2', 'max_wkend_24_1'
+    - extract the [168 hourly temporal patterns](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-1a-168-hourly-version), each with a column name prefix 'hr_'
+    - extract the [weekend-vs-weekday trip counts](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-2-weekday-vs-weekend-total-counts), with column name 'weekday' and 'weekend'
+    - extract the [48 weekday hourly vs. weekend hourly temporal patterns](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-1b-48-weekday-hourly-vs-weekend-hourly-version), each with a column name prefix 'wkday_24_'
+    - extract the [time flexibility score](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-3-time-flexibility-score), with column name 'flex_wkday_24' and 'flex_wkend_24'
+    - extract the [most frequent trip hours](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-4-most-frequent-trip-hours), with column name 'max_wkday_24_1', 'max_wkday_24_2', 'max_wkend_24_1'
     - return all sets of temporal features as a DataFrame
 
   - ```_extract_geographical_patterns(self)```:
-    - extract the [number of trips originated in each zip code](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#geographical-patterns)
-    - return the geographical trip count features as a DataFrame
+    - extract the [# trips originated in each zip code](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#geographical-patterns)
+    - return the geographical features as a DataFrame
 
   - ```_get_one_purchase_feature(self, feature)```:
     - argument ```feature```: one item from the ```purchase_features``` list
-    - extract the [number of trips associated with the ticket purchasing ```feature```](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#ticket-purchasing-pattern)
-    - return one type of ticket-purchasing trip count features as a DataFrame
+    - extract the [# trips associated with the ticket purchasing dimension specified in ```feature```](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#ticket-purchasing-pattern)
+    - return one type of ticket purchasing features as a DataFrame
 
   - ```_extract_ticket_purchasing_patterns(self)```:
     - call ```_get_one_purchase_feature(self, feature)``` to extract the [number of trips associated with all ticket purchasing dimensions specified in ```purchase_features```](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#ticket-purchasing-pattern)
-    - return all ticket-purchasing trip count features as a DataFrame
+    - return the ticket-purchasing features as a DataFrame
 
   - ```_label_rider_by_trip_frequency(self, rider)```:
     - argument ```rider```: a row in the rider feature DataFrame
@@ -85,7 +85,7 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
       - 1: less than or equal to 20-time/month riders:
       - 2: more than 20-time/month rider
       - -1: others
-    return label
+    - return label
 
   - ```_label_commuter_rail_rider(self, rider)```:
     - argument ```rider```: a row in the rider feature DataFrame
@@ -95,7 +95,7 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
   - ```extract_features(self)```:
     - call ```_extract_temporal_patterns()```, ```_extract_geographical_patterns()```, ```_extract_ticket_purchasing_patterns()``` to extract each group of features
     - drop infrequent riders and commuter rail riders from zones other than 1A
-    - column-wise concatenate features to and save the features as `.csv` files to the cached features path
+    - column-wise concatenate features to and save as a `.csv` file to the features cache path
     - return the concatenated rider features DataFrame
 
 ## Rider Segmentation
