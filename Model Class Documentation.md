@@ -10,34 +10,34 @@ title: Module Class Documentation
 
 ## Feature Extraction
 
-The ```feature.py``` module allows you to extract rider-level pattern-of-use features from the MBTA transaction-level data.
+The ```feature.py``` module cleans MBTA transaction-level data and extracts rider-level pattern-of-use features.
 
 ### Class ```DataLoader```
 
 A ```DataLoader``` object first merges the joint AFC_ODX table, the stops table and fare product tables to form transaction records. The preprocessed transaction records are then passed to a ```FeatureExtractor``` object to extract the rider-level pattern-of-use features.
 
-Note: A ```DataLoader``` object is initialized by a ```FeatureExtractor``` object and not explicited used elsewhere in our project.
+Note: A ```DataLoader``` object is initialized by a ```FeatureExtractor``` object and is not explicitly used elsewhere in our project.
 
 - **Attributes**:
   - ```start_month```: a string representing the start month in the format of YYMM, e.g. '1710'
-  - ```duration```: an integer representing the length of duration
+  - ```duration```: an integer representing the length of duration (in months)
   - ```afc_odx_fields```: a list of fields used to read the joint AFC_ODX table, ['deviceclassid', 'trxtime', 'tickettypeid', 'card', 'origin', 'movementtype']
   - ```fp_field```: a list of fields used to read the fare product table, ['tariff', 'servicebrand', 'usertype', 'tickettypeid', 'zonecr']
   - ```stops_fields```: a list of fields used to read the stops table, ['stop_id', 'zipcode']
   - ```fareprod```: a DataFrame of fare product records
   - ```stops```: a DataFrame of stop records
-  - ```station_deviceclassid```: a list of interested device class ids, [411, 412, 441, 442, 443, 501, 503]
-  - ```validation_movementtype```: a list of interested validation movement types, [7, 20]
+  - ```station_deviceclassid```: a list of device class IDs of interest, [411, 412, 441, 442, 443, 501, 503]
+  - ```validation_movementtype```: a list of validation movement types of interest, [7, 20]
   - ```df```: a DataFrame of preprocessed transaction records
 
 - **Methods**:
   - ```__init__(self, start_month, duration)```:
-    - initialize the attributes
-    - read in the stops and the fare product table as DataFrame
+    - initializes the attributes
+    - reads in the stops and the fare product table as DataFrames
 
   - ```load(self)```:
-    - read in the joint AFC_ODX table with the specified ```start_month``` and ```duration``` as a DataFrame
-    - merge joint AFC_ODX, stops and fare product table and select rows with the interested ```station_deviceclassid``` and ```validation_movementtype```
+    - reads in the joint AFC_ODX table corresponding to the specified ```start_month``` and ```duration``` as a DataFrame
+    - merges joint AFC_ODX, stops and fare product table and select rows with ```station_deviceclassid``` and ```validation_movementtype``` of interest
     - save the preprocessed transaction records as ```self.df```
 
 ### Class ```FeatureExtractor```
