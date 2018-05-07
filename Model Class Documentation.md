@@ -10,34 +10,34 @@ title: Module Class Documentation
 
 ## Feature Extraction
 
-The ```feature.py``` module allows you to extract rider-level pattern-of-use features from the MBTA transaction-level data.
+The ```feature.py``` module cleans MBTA transaction-level data and extracts rider-level pattern-of-use features.
 
 ### Class ```DataLoader```
 
 A ```DataLoader``` object first merges the joint AFC_ODX table, the stops table and fare product tables to form transaction records. The preprocessed transaction records are then passed to a ```FeatureExtractor``` object to extract the rider-level pattern-of-use features.
 
-Note: A ```DataLoader``` object is initialized by a ```FeatureExtractor``` object and not explicited used elsewhere in our project.
+Note: A ```DataLoader``` object is initialized by a ```FeatureExtractor``` object and is not explicitly used elsewhere in our project.
 
 - **Attributes**:
   - ```start_month```: a string representing the start month in the format of YYMM, e.g. '1710'
-  - ```duration```: an integer representing the length of duration
+  - ```duration```: an integer representing the length of duration (in months)
   - ```afc_odx_fields```: a list of fields used to read the joint AFC_ODX table, ['deviceclassid', 'trxtime', 'tickettypeid', 'card', 'origin', 'movementtype']
   - ```fp_field```: a list of fields used to read the fare product table, ['tariff', 'servicebrand', 'usertype', 'tickettypeid', 'zonecr']
   - ```stops_fields```: a list of fields used to read the stops table, ['stop_id', 'zipcode']
   - ```fareprod```: a DataFrame of fare product records
   - ```stops```: a DataFrame of stop records
-  - ```station_deviceclassid```: a list of interested device class ids, [411, 412, 441, 442, 443, 501, 503]
-  - ```validation_movementtype```: a list of interested validation movement types, [7, 20]
+  - ```station_deviceclassid```: a list of device class IDs of interest, [411, 412, 441, 442, 443, 501, 503]
+  - ```validation_movementtype```: a list of validation movement types of interest, [7, 20]
   - ```df```: a DataFrame of preprocessed transaction records
 
 - **Methods**:
   - ```__init__(self, start_month, duration)```:
-    - initialize the attributes
-    - read in the stops and the fare product table as DataFrame
+    - initializes the attributes
+    - reads in the stops and the fare product table as DataFrames
 
   - ```load(self)```:
-    - read in the joint AFC_ODX table with the specified ```start_month``` and ```duration``` as a DataFrame
-    - merge joint AFC_ODX, stops and fare product table and select rows with the interested ```station_deviceclassid``` and ```validation_movementtype```
+    - reads in the joint AFC_ODX table corresponding to the specified ```start_month``` and ```duration``` as a DataFrame
+    - merges joint AFC_ODX, stops and fare product table and select rows with ```station_deviceclassid``` and ```validation_movementtype``` of interest
     - save the preprocessed transaction records as ```self.df```
 
 ### Class ```FeatureExtractor```
@@ -286,6 +286,73 @@ A `ClusterProfiler` object summarizes each cluster's overall pattern-of-use feat
     - format the profile cache path and save the profiled cluster summaries in the path
 
 ## Visualization
+
+### Class `Visualization`:
+A `Visualization` object visualizes the cluster profiles in various types of visualizations (i.e. static heat map for cluster temporal patterns, static scatter chart for visualizing clusters on 2D PCA-subspace, interactive map for cluster geographical patterns, and static bar charts for other cluster statistics)
+
+- **Attributes**:
+  - `start_month`: a string representing the start month in the format of YYMM, e.g. '1710'
+  - `duration`: an integer representing the length of duration
+  - `input_path`: a string for the input directory path (path to cached profiles)
+  - `output_path`: a string for the output directory path 
+  - `param_keys`: a list of parameter keys for matching user-specified options to the cached cluster profiles (this is primarily for reading in the data)
+  - `df`: the DataFrame with cluster profiles data for visualization
+  - `req_view`: User-specified view request, options are ["overview", "hierarchical", "non-hierarchical"]. "Overview" is the option to view the overall pattern where all riders are treated as one big cluster. "Hierarchical" and "non-hierarchical" are options to view the clustering results from the hierarchical or the non-hierarchical pipeline.
+  - `req_w_time`: User-specified weights on temporal patterns, possible values are integers from 0 to 100. Note, equal weighting between temporal, geographical, and ticket purchasing patterns is assumed if this weight is set to 0 or is left unspecified.
+  - `req_algo`: User-specified algorithm request, options are ["lda", "kmeans"] for viewing the clustering results from LDA or K-means algorithms, repspectively.
+
+- **Methods**:
+  - `__init__(self, start_month='1701', duration=1)`:
+      - initialize the some class attributes (i.e. `start_month`, `duration`, `input_path`, `output_path` and `param_keys`)
+      - sets up the output directory based on `output_path` if it does not already exist
+
+  - `__split(self, delimiters, string, maxsplit=0)`:
+    - splits file name by `delimiters` to match cached results
+
+  - `__get_cached_params_list(self)`:
+    - finds the parameter combinations in the input path directory
+    - return the list of parameter combinations of all cached results
+
+  - `__read_csv(self, req_param_dict, by_cluster)`:
+    - reads in the cached cluster profile results based on user-specified requests (req_param_dict, which includes requests specified for view option, start month, duration, weight on temproal patterns and algorithm). The by_cluster paramter is a boolean, where True means viewing by cluster and False means viewing the overall pattern
+    - save the read DataFrame in the `self.df` attribute
+
+  - `load_data(self, by_cluster=False, hierarchical=False, w_time=None, algorithm=None)`:
+    - parses user-specified parameters to construct a dictionary of requested parameters (req_param_dict) to either call the `__read_csv()` function for reading in the data if the requested file exists in the cached_profile directory or makes a `ClusterProfiler` to extract the requested cluster profile
+
+  - `visualize_clusters_2d(self)`:
+    - plots the clusters in the 2D PCA subspace on a static scatter plot. This allows a visual comparison for how different the clusters are from each other.
+  
+  - `plot_cluster_hourly_pattern(self, cluster)`: 
+    - given a cluster ID, plots a 7 (days of week) by 24 (hours in a day) temporal usage matrix using a heatmap visualization
+
+  - `plot_all_hourly_patterns(self)`:
+    - plots the temporal usage heatmap visualizations for all clusters in the `self.df` attribute
+  
+  - `plot_cluster_geo_pattern(self, cluster)`:
+    - given a cluster ID, plots an interactive map visualization for visualizing the cluster geographical pattern.
+    - this function saves the resulting visualization as a html file in the output_path directory (typically `cached_viz` unless the user resets the path in `config.py`)
+  
+  - `__single_feature_viz(self, feature, title, ylabel, xlabel)`:
+    - helper method for `plot_cluster_size` and `plot_avg_num_trips` functions below to plot a single bar chart of cluster feature VS. cluster ID
+
+  - `__group_feature_viz(self, grp_key, stacked, title, ylabel, xlabel)`:
+    - helper method for `plot_demographics` and `plot_ticket_purchasing_patterns` functions below to plot Multi-bar plot visualizations of cluster feature VS. cluster ID 
+
+  - `plot_cluster_size(self)`:
+    - plots number of riders vs. cluster ID on a static bar chart
+
+  - `plot_avg_num_trips(self)`: 
+    - plots average number of trips vs. cluster ID on a static bar chart
+  
+
+  - `plot_demographics(self, grp, stacked=True)`:
+    - plots either a "stacked" or "grouped" barchart showing the inferred cluster demographics distributions 
+    - the `grp` option specifies which type of demographics distribution to display. Options are ['race', 'emp', 'edu', 'inc'] for race, employment, education and income.
+  
+  - plot_ticket_purchasing_patterns(self, grp, stacked=True):
+    - plots either a "stacked" or "grouped" barchart showing cluster ticket purchasing patterns
+    - the `grp` option specifies which type of ticket purchasing habtit to display. Options are ['servicebrand', 'usertype', 'tariff'] for service brand (e.g. Rapid Transit), user type (e.g. Adult or Student), and tariff type (e.g. Monthly Pass).
 
 ## Auto Report Generator
 
