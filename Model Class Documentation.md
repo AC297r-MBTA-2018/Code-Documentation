@@ -32,12 +32,12 @@ Note: A ```DataLoader``` object is initialized by a ```FeatureExtractor``` objec
 
 - **Methods**:
   - ```__init__(self, start_month, duration)```:
-    - initializes the attributes
-    - reads in the stops and the fare product table as DataFrames
+    - initialize the attributes
+    - read in the stops and the fare product table as DataFrames
 
   - ```load(self)```:
-    - reads in the joint AFC_ODX table corresponding to the specified ```start_month``` and ```duration``` as a DataFrame
-    - merges joint AFC_ODX, stops and fare product table and select rows with ```station_deviceclassid``` and ```validation_movementtype``` of interest
+    - read in the joint AFC_ODX table corresponding to the specified ```start_month``` and ```duration``` as a DataFrame
+    - merge joint AFC_ODX, stops and fare product table and select rows with ```station_deviceclassid``` and ```validation_movementtype``` of interest
     - save the preprocessed transaction records as ```self.df```
 
 ### Class ```FeatureExtractor```
