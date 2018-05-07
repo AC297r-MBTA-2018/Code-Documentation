@@ -103,27 +103,103 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
 ### Class ```Segmentation```
 
 - **Attributes**:
-    - ```random_state```, ```max_iter```, ```tol```: attributes for initializing K-means
-    - ```start_month```: a string representing the start month in the format of YYMM, e.g. '1710'
-    - ```duration```: an integer representing the length of duration
-    - ```w_time_choice```: an integer from 0 to 100 to indicate the weight of temporal features as percentage
-    - ```N_riders```: number of riders in the rider features DataFrame
-    - ```time_feats```: a list of column name of all sets of temporal features
-    - ```geo_feats```: a list of column names of all geographical features
-    - ```purchase_feats```: a list of column names of all ticket-purchasing features
-    self.weekday_vs_weekend_feats = ['weekday', 'weekend']
-    - ```features```: a list of concatenated time, geo and ticket-purchasing features for non-hierarchical clustering
-    - ```features_layer_1```: a list of features used in the initial clustering step
-    - ```features_layer_2```: a list of features used in the final clustering step
-    - ```w_time```: weight for temporal patterns
-    - ```w_geo```: weight for geographical patterns
-    - ```w_purchase```: weight for purchase patterns
-    - ```w_week```: weight for weekend/weekday columns
+  - ```random_state```, ```max_iter```, ```tol```: attributes for initializing K-means
+  - ```start_month```: a string representing the start month in the format of YYMM, e.g. '1710'
+  - ```duration```: an integer representing the length of duration
+  - ```w_time_choice```: an integer from 0 to 100 to indicate the weight of temporal features as percentage
+  - ```N_riders```: number of riders in the rider features DataFrame
+  - ```time_feats```: a list of column name of all sets of temporal features
+  - ```geo_feats```: a list of column names of all geographical features
+  - ```purchase_feats```: a list of column names of all ticket-purchasing features
+  self.weekday_vs_weekend_feats = ['weekday', 'weekend']
+  - ```features```: a list of concatenated time, geo and ticket-purchasing features for non-hierarchical clustering
+  - ```features_layer_1```: a list of features used in the initial clustering step
+  - ```features_layer_2```: a list of features used in the final clustering step
+  - ```w_time```: weight for temporal patterns
+  - ```w_geo```: weight for geographical patterns
+  - ```w_purchase```: weight for purchase patterns
+  - ```w_week```: weight for weekend/weekday columns
+  - ```df```: the rider features DataFrame
 
 - **Methods**:
+  - ```__init__(self, w_time=None, start_month='1701', duration=1, random_state=RANDOM_STATE, max_iter=MAX_ITER, tol=TOL)```:
+    - initialize the attributes
+    - call ```__get_data()```, ```__standardize_features()```, ```__normalize_features()```
 
+  - ```__get_data(self)```:
+    - read in and save as ```self.df``` the extracted rider features DataFrame of the specified `start_month` and `duration`
+
+  - ```__standardize_features(self)```:
+    - standardize numeric features so that each column has mean = 0 and std = 1
+    - a column with the same value (std = 0) would be set to 0's
+
+  - ```__normalize_features(self)```:
+    - normalize numeric features so that each column has max = 1 and min = 0
+
+  - ```__apply_clustering_algorithm(self, features, model, n_clusters_list=[2, 3, 4, 5])```:
+    - argument `features`: the rider features DataFrame
+    - argument `model`: an initialized but not fitted sklearn K-means or LDA object
+    - argument `n_clusters_list`: a list of integers to representing the range of possible number of clusters
+    - segment the `features` using the segmentation `model` for all values in `n_clusters_list`
+    - for each value used as the number of clusters, the clustering assignment is evaluated by calling ```__get_cluster_score(self, features, cluster_labels)``` to get a Calinski-Harabaz Index score
+    - return the list of cluster assignments with the highest Calinski-Harabaz Index score
+
+  - ```__get_cluster_score(self, features, cluster_labels)```:
+    - argument `features`: rider features DataFrame
+    - argument `cluter_labels`: a list of integers representing cluster assignments
+    - return the Calinski-Harabaz Index score that shows how good the clustering results are
+
+  - ```__initial_rider_segmentation(self, hierarchical=False)```
+    - argument `hierarchical`: a boolean indicator of whether the segmentation pipeline is hierarchical or not
+    - With a **hierarchical** pipeline:
+      - perform initial clustering using K-means algorithm on the [weekday-vs-weekend trip count features](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-2-weekday-vs-weekend-total-counts) and [ticket-purchasing features](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#ticket-purchasing-pattern)
+      - append the initial cluster assignments to the rider features DataFrame as a new column 'initial_cluster'
+    - With a **non-hierarchical** pipeline:
+      - simply rename the column 'group_by_frequency' to 'initial_cluster'
+
+  - ```__final_rider_segmentation(self, model, features, n_clusters_list=[2, 3, 4, 5], hierarchical=False):```:
+    - argument `hierarchical`: a boolean indicator of whether the segmentation pipeline is hierarchical or not
+    - set the feature weights
+    - With a **hierarchical** pipeline:
+      - within each initial cluster, perform further clustering on [168 hourly temporal features](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-1a-168-hourly-version) and [geographical features](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#geographical-patterns)
+    - With a **non-hierarchical** pipeline:
+      - perform clustering on [168 hourly temporal features](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#feature-set-1a-168-hourly-version), [geographical features](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#geographical-patterns) and [ticket-purchasing features](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#ticket-purchasing-pattern)
+    - save the final cluster assignments to the rider features DataFrame as a new column 'final_cluster'
+    - return the 'final_cluster' column
+
+  - ```get_rider_segmentation(self, hierarchical=False)```:
+    - argument `hierarchical`: a boolean indicator of whether the segmentation pipeline is hierarchical or not
+    - apply the hierarchical or non-hierarchical pipeline to get the final cluster assignments
+    - save the results as `.csv` files to the cluster cache path
 
 ## Cluster Inference
+
+### Class ```CensusFormatter```
+
+- **Attributes**:
+  - `new_col_names`: static class variable, a list of column names used to rename raw census columns
+  - `census_groups`: static class variable, a dictionary for census groups and prefixes in the renamed census dataframe
+  - `raw_census_filepath`: a string representing the file path of the raw census data
+  - `census_in_counts`: a DataFrame of census data represented in counts
+  - `census_in_percents`: a DataFrame of census data represented in percentages
+  - `census_in_proportions`: A DataFrame of census data represented in proportions
+
+- **Methods**:
+  - `__init__(self, raw_census_filepath)`:
+    - initialize the attributes
+    - format the raw census data in counts, percentages and proportions, respectively
+
+  - `__format_raw_census_in_counts(self, raw_census_filepath)`:
+    - argument `raw_census_filepath`: a string of file path to raw census data
+    - format the raw census data as counts
+
+  - `__convert_to_percents(self, census_in_counts)`:
+    - argument `census_in_counts`: a DataFrame of census data represented in counts (the output of `__format_raw_census_in_counts()`)
+    - format the raw census data as percentages
+
+  - `__convert_to_proportions(self, census_in_counts)`:
+    - argument `census_in_counts`: a DataFrame of census data represented in counts (the output of `__format_raw_census_in_counts()`)
+    - format the raw census data as proportions
 
 ## Visualization
 
