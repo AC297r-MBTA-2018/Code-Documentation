@@ -106,7 +106,7 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
   - ```random_state```, ```max_iter```, ```tol```: attributes for initializing K-means
   - ```start_month```: a string representing the start month in the format of YYMM, e.g. '1710'
   - ```duration```: an integer representing the length of duration
-  - ```w_time_choice```: an integer from 0 to 100 to indicate the weight of temporal features as percentage
+  - ```w_time_choice```: an integer from 0 to 100 representing the weight of temporal features as percentage
   - ```N_riders```: number of riders in the rider features DataFrame
   - ```time_feats```: a list of column name of all sets of temporal features
   - ```geo_feats```: a list of column names of all geographical features
@@ -178,7 +178,7 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
 
 - **Attributes**:
   - `new_col_names`: static class variable, a list of column names used to rename raw census columns
-  - `census_groups`: static class variable, a dictionary for census groups and prefixes in the renamed census dataframe
+  - `census_groups`: static class variable, a dictionary for census groups and prefixes in the renamed census DataFrame
   - `raw_census_filepath`: a string representing the file path of the raw census data
   - `census_in_counts`: a DataFrame of census data represented in counts
   - `census_in_percents`: a DataFrame of census data represented in percentages
@@ -200,6 +200,84 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
   - `__convert_to_proportions(self, census_in_counts)`:
     - argument `census_in_counts`: a DataFrame of census data represented in counts (the output of `__format_raw_census_in_counts()`)
     - format the raw census data as proportions
+
+  - `to_csv(self, filename, census_type='proportions')`:
+    - argument `filename`: A string of file name to save
+    - argument `census_type`: A string of which census type to save, options = ['percents', 'counts', 'proportions'], default = 'proportions'
+    - save census data in the type specified by `census_type`
+
+  - `get_census_in_counts(self)`:
+    - return census_in_counts
+
+  - `get_census_in_percents(self)`:
+    - return `census_in_percents`
+
+  - `get_census_in_proportions(self)`:
+    - return `census_in_proportions`
+
+### Class `ClusterProfiler`:
+
+- **Attributes**:
+  - `feat_groups`: static class variable, a list of feature groups and expected prefixes in rider features DataFrame
+  - `demo_groups`: static class variable, a dictionary for demographics groups and prefixes in the profiled cluster DataFrame
+  - `start_month`: a string representing the start month in the format of YYMM, e.g. '1710'
+  - `duration`: an integer representing the length of duration
+  - `hierarchical`: a boolean indicator of whether the segmentation pipeline is hierarchical or not
+  - `census`: a DataFrame of census data represented in counts returned by a `CensusFormatter` object
+  - `w_time`: an integer from 0 to 100 representing the weight of temporal features as percentage
+  - `input_path`: a string of the cached cluster results
+  - `param_keys`: a list of parameter keys
+  - `riders`: the rider feature DataFrame with cluster assignments
+
+- **Methods**:
+  - `__init__(self, hierarchical=False, w_time=None, start_month='1701', duration=1)`:
+    - initialize the attributes
+    - call `__get_data()` to get the rider features DataFrame with cluster assignments
+
+  - `__split(self, delimiters, string, maxsplit=0)`:
+    - split file name by `delimiters` to match cached results
+
+  - `__get_cached_params_list(self)`:
+    - find the parameter combinations of the cached results
+    - return the list of parameter combinations of all cached results
+
+  - `__get_data(self)`:
+    - read in the cached cluster results or re-cluster to get the rider features DataFrame with cluster assignments
+    - save the rider features DataFrame with cluster assignments in the `self.riders` attribute
+
+  - `_softmax(self, df)`:
+    - argument `df`: a DataFrame of numeric values
+    - transform each row of `df` into softmax probabilities
+    - return the transformed DataFrame
+
+  - `_summarize_features(self, riders, by_cluster)`:
+    - argument `riders`: a DataFrame containing rider-level pattern-of-use features used to form clusters plus resulting cluster assignment
+    - argument `by_cluster`: a boolean indicating whether to summarize features by cluster or overall
+    - summarize, by cluster or overall, rider-level pattern-of-use features by turning each feature group (e.g. temporal or geographical patterns) into a probability distribution (columns belonging to a feature set add up to 1)
+
+  - `_summarize_demographics(self, cluster_features)`:
+    - argument `cluster_features`: a DataFrame containing cluster-level pattern-of-use features
+    - take a softmax transformation on the geo pattern distribution of each cluster
+    - compute the expected demographics distribution using the softmax distribution of geo patterns
+      - In other words, we calculate E = sum over i of $x_i p(x_i)$ where x is a vector representing demographics data in zip code i and $p(x_i)$ is the probability of zipcode i.
+
+  - `_get_first_2_pca_components(self, features)`:
+    - argument `features`: a DataFrame containing cluster-level pattern-of-use features
+    - compute the first 2 principal components (PCs) of the cluster-level pattern-of-use features
+    - save the 2 PCs' values and the cluster size as a DataFrame
+    - return the DataFrame
+
+  - `extract_profile(self, algorithm, by_cluster)`:
+    - argument `algorithm`: a string, options = ['kmeans', 'lda']
+    - argument `by_cluster`: a boolean indicating whether to summarize features by cluster or overall
+    - summarize the cluster pattern-of-use features, demographics distributions and the first 2 PCs
+    - save the profiled cluster summaries by calling `__save_profile(self, profile, algorithm, by_cluster)`
+
+  - `__save_profile(self, profile, algorithm, by_cluster)`:
+    - argument `profile`: a DataFrame of summarized cluster pattern-of-use features with its demographics distribution
+    - argument `algorithm`: a string, options = ['kmeans', 'lda']
+    - argument `by_cluster`: a boolean indicating whether to summarize features by cluster or overall
+    - format the profile cache path and save the profiled cluster summaries in the path
 
 ## Visualization
 
