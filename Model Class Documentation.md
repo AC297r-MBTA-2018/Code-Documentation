@@ -44,7 +44,7 @@ Note: A ```DataLoader``` object is initialized by a ```FeatureExtractor``` objec
 
 A ```FeatureExtractor``` object extracts the rider-level temporal, geographical, and ticket-purchasing features based on the preprocessed transaction records returned by the ```DataLoader```
   Label riders by their total number of trips, and whether they use commuter rail expect for zone 1a
-  The second step is for further filtering in segmentaion model.
+  The second step is for further filtering in segmentation model.
 
 - **Attributes**:
   - ```start_month```: a string representing the start month in the format of YYMM, e.g. '1710'
@@ -101,6 +101,8 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
 ## Rider Segmentation
 
 ### Class ```Segmentation```
+
+A ```Segmentation``` object clusters riders by their temporal, geographical, and ticket-purchasing features based on a user-specified pipeline option (hierarchical vs. non-hierarchical), a user-specified algorithm option (kmeans vs. lda) and a user-specified feature weighs.
 
 - **Attributes**:
   - ```random_state```, ```max_iter```, ```tol```: attributes for initializing K-means
@@ -176,6 +178,8 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
 
 ### Class ```CensusFormatter```
 
+A ```CensusFormatter``` object formats the census data to counts, percentages or proportions based on the user's specification.
+
 - **Attributes**:
   - `new_col_names`: static class variable, a list of column names used to rename raw census columns
   - `census_groups`: static class variable, a dictionary for census groups and prefixes in the renamed census DataFrame
@@ -216,6 +220,8 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
     - return `census_in_proportions`
 
 ### Class `ClusterProfiler`:
+
+A `ClusterProfiler` object summarizes each cluster's overall pattern-of-use features and infers its demographics distributions based on the mapping from its softmax transformed geographical patterns to the census data.
 
 - **Attributes**:
   - `feat_groups`: static class variable, a list of feature groups and expected prefixes in rider features DataFrame
@@ -282,3 +288,24 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
 ## Visualization
 
 ## Auto Report Generator
+
+### Class `ReportGenerator`
+
+A `ReportGenerator` object is initialized in a `ClusterProfiler` object. It generates a text summary for each cluster based on the output of the `ClusterProfiler` that contains it and a pre-trained (and retrainable) 7x24 temporal pattern classification Convolutional Neural Network (CNN) Model.
+
+- **Attributes**:
+  - `n_classes`: an integer indicating the number of different types of riders to classify
+  - `cnn_model_filename`: a string of the file name (`.h5`) of the pre-trained CNN model
+  - `sample_factor`: an integer indicating the factor for oversampling clusters' 7 x 24 time matrices
+  - `noise_std`: a float indicating the standard deviation for the Gaussian noise signal used in oversampling the time matrices
+
+- **Methods**:
+  - `get_text(self, row)`:
+    - argument `row`: a row of the profiled cluster DataFrame
+    - return the formatted string of generated text description for each cluster, including the predicted rider-type, the cluster size, the average number of trips, the most frequent trip hours during weekdays / weekends and the zip code that shows most traffic
+
+  - `generate_report(self, df)`:
+    - argument `df`: a DataFrame of the profiled cluster
+    - predict the rider-type for each row in `df` using the pre-trained CNN model
+    - generate text summary for each cluster
+    - append the text summaries as new column ('report') to `df`
