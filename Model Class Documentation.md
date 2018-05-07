@@ -350,7 +350,7 @@ A `Visualization` object visualizes the cluster profiles in various types of vis
     - plot either a "stacked" or "grouped" barchart showing the inferred cluster demographics distributions 
     - the `grp` option specifies which type of demographics distribution to display. Options are ['race', 'emp', 'edu', 'inc'] for race, employment, education and income.
   
-  - plot_ticket_purchasing_patterns(self, grp, stacked=True):
+  - `plot_ticket_purchasing_patterns(self, grp, stacked=True)`:
     - plot either a "stacked" or "grouped" barchart showing cluster ticket purchasing patterns
     - the `grp` option specifies which type of ticket purchasing habtit to display. Options are ['servicebrand', 'usertype', 'tariff'] for service brand (e.g. Rapid Transit), user type (e.g. Adult or Student), and tariff type (e.g. Monthly Pass).
 
