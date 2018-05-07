@@ -29,11 +29,11 @@ This repo contains code documentation for both of our deliverables:
 
 ## Github Organization Structure
 - **Rider-Segmentation-Full-App**: [This](https://github.com/AC297r-MBTA-2018/Rider-Segmentation-Full-App) is the code base for both the Python segmentation package and the app with full functionality (i.e. based on user input, the app is able to send clustering request to the Flask backend on a new data set or user-specified weights/duration that has not been cached. Disclaimer: The full input source is not available on Github for security reasons, and each new clustering request takes at least several hours.)
-- **Dashboard**: [This](https://github.com/AC297r-MBTA-2018/Dashboard) is the static version of the full app that has limited functinality (The app is only able to display pre-ran monthly clustering results for Dec 2016 to Nov 2017 with equal weighting on temporal, geographical and ticket purchasing pattern.) The app is deployed as a Github page (https://ac297r-mbta-2018.github.io/Dashboard/).
+- **Dashboard**: [This](https://github.com/AC297r-MBTA-2018/Dashboard) is the static version of the full app that has limited functionality (The app is only able to display pre-ran monthly clustering results for Dec 2016 to Nov 2017 with equal weighting on temporal, geographical and ticket purchasing pattern.) The app is deployed as a Github page (https://ac297r-mbta-2018.github.io/Dashboard/).
 - **Final-Report**: [This](https://github.com/AC297r-MBTA-2018/Final-Report) repository hosts the final report which is deployed as a Github page (https://ac297r-mbta-2018.github.io/Final-Report/).
 - **Code-Documentation**: [This](https://github.com/AC297r-MBTA-2018/Code-Documentation) repository hosts the content of this code documentation which is deployed as a Github page, *current page*.
 
-Note: The limtied Dashboard, Final Report and Code Documentation are linked via a navigation bar on respective Github pages.
+Note: The limited Dashboard, Final Report and Code Documentation are linked via a navigation bar on respective Github pages.
 
 
 
@@ -124,9 +124,9 @@ A brief item description for ```MBTAriderSegmentation```:
 
 - `Train_Report_Model.ipynb`  notebook contains starter code to train the auto report generator.
 
-- `data` directory contains the input data files from MBTA and external data sources (i.e., US census, MA geojson, MBTA geojson, MBTA AFC/ODX, MBTA fare product, MBTA stops) and output files from various modules in this package (i.e. extracted feature in `cached_features`, segmentation results in `cached_clusters`, profiled cluster summaries in `cached_profiles`, cached cluster geographical distribution visualizations in `cached_viz`, and a trained CNN model to classify temporal patterns in `report_models`). 
+- `data` directory contains the input data files from MBTA and external data sources (i.e., US census, MA geojson, MBTA geojson, MBTA AFC/ODX, MBTA fare product, MBTA stops) and output files from various modules in this package (i.e. extracted feature in `cached_features`, segmentation results in `cached_clusters`, profiled cluster summaries in `cached_profiles`, cached cluster geographical distribution visualizations in `cached_viz`, and a trained CNN model to classify temporal patterns in `report_models`).
 
-    Note: the segmentation module creates subdirectories in the `cached_clusters` directory when saving the result. Based on the choice of pipeline, the results are saved in  `hierarchical/results` or `non-hierarchical/results` subdirectories. For reference, the segmentation module also saves the clustering Calinski-Harabaz scores of each algorithm (LDA and K-means) in `hierarchical/scores` or `non-hierarchical/scores` subdirectories. The profile module also creates subdirectories in the `cached_profiles` directory when saving the result. The name of the subdirectory it creates is based on the starting month and duration. For instance, for a start month = '1701' and a duration = 1, the resulting subdirectory is '2017-Jan'; for the same start month and a duration = 2, the resulting subdirectory is '2017-Jan_to_2017-Feb'. 
+    Note: the segmentation module creates subdirectories in the `cached_clusters` directory when saving the result. Based on the choice of pipeline, the results are saved in  `hierarchical/results` or `non-hierarchical/results` subdirectories. For reference, the segmentation module also saves the clustering Calinski-Harabaz scores of each algorithm (LDA and K-means) in `hierarchical/scores` or `non-hierarchical/scores` subdirectories. The profile module also creates subdirectories in the `cached_profiles` directory when saving the result. The name of the subdirectory it creates is based on the starting month and duration. For instance, for a start month = '1701' and a duration = 1, the resulting subdirectory is '2017-Jan'; for the same start month and a duration = 2, the resulting subdirectory is '2017-Jan_to_2017-Feb'.
 
 ## Installation
 
