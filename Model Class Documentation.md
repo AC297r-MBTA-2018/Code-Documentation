@@ -71,7 +71,7 @@ A ```FeatureExtractor``` object extracts the rider-level temporal, geographical,
 
   - ```_get_one_purchase_feature(self, feature)```:
     - argument ```feature```: one item from the ```purchase_features``` list
-    - extract the [# trips associated with the ticket purchasing dimension specified in ```feature```](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#ticket-purchasing-pattern), each with a column name predix '{feature}_'
+    - extract the [# trips associated with the ticket purchasing dimension specified in ```feature```](https://ac297r-mbta-2018.github.io/Final-Report/feature.html#ticket-purchasing-pattern), each with a column name prefix '{feature}_'
     - return one type of ticket purchasing features as a DataFrame
 
   - ```_extract_ticket_purchasing_patterns(self)```:
@@ -294,7 +294,7 @@ A `Visualization` object visualizes the cluster profiles in various types of vis
   - `start_month`: a string representing the start month in the format of YYMM, e.g. '1710'
   - `duration`: an integer representing the length of duration
   - `input_path`: a string for the input directory path (path to cached profiles)
-  - `output_path`: a string for the output directory path 
+  - `output_path`: a string for the output directory path
   - `param_keys`: a list of parameter keys for matching user-specified options to the cached cluster profiles (this is primarily for reading in the data)
   - `df`: the DataFrame with cluster profiles data for visualization
   - `req_view`: User-specified view request, options are ["overview", "hierarchical", "non-hierarchical"]. "Overview" is the option to view the overall pattern where all riders are treated as one big cluster. "Hierarchical" and "non-hierarchical" are options to view the clustering results from the hierarchical or the non-hierarchical pipeline.
@@ -314,7 +314,7 @@ A `Visualization` object visualizes the cluster profiles in various types of vis
     - return the list of parameter combinations of all cached results
 
   - `__read_csv(self, req_param_dict, by_cluster)`:
-    - read in the cached cluster profile results based on user-specified requests (req_param_dict, which includes requests specified for view option, start month, duration, weight on temproal patterns and algorithm). The by_cluster paramter is a boolean, where True means viewing by cluster and False means viewing the overall pattern
+    - read in the cached cluster profile results based on user-specified requests (req_param_dict, which includes requests specified for view option, start month, duration, weight on temporal patterns and algorithm). The by_cluster paramter is a boolean, where True means viewing by cluster and False means viewing the overall pattern
     - save the read DataFrame in the `self.df` attribute
 
   - `load_data(self, by_cluster=False, hierarchical=False, w_time=None, algorithm=None)`:
@@ -322,37 +322,37 @@ A `Visualization` object visualizes the cluster profiles in various types of vis
 
   - `visualize_clusters_2d(self)`:
     - plot the clusters in the 2D PCA subspace on a static scatter plot. This allows a visual comparison for how different the clusters are from each other.
-  
-  - `plot_cluster_hourly_pattern(self, cluster)`: 
+
+  - `plot_cluster_hourly_pattern(self, cluster)`:
     - given a cluster ID, plot a 7 (days of week) by 24 (hours in a day) temporal usage matrix using a heatmap visualization
 
   - `plot_all_hourly_patterns(self)`:
     - plot the temporal usage heatmap visualizations for all clusters in the `self.df` attribute
-  
+
   - `plot_cluster_geo_pattern(self, cluster)`:
     - given a cluster ID, plot an interactive map visualization for visualizing the cluster geographical pattern.
     - save the resulting visualization as a html file in the output_path directory (typically `cached_viz` unless the user resets the path in `config.py`)
-  
+
   - `__single_feature_viz(self, feature, title, ylabel, xlabel)`:
     - helper method for `plot_cluster_size` and `plot_avg_num_trips` functions below to plot a single bar chart of cluster feature VS. cluster ID
 
   - `__group_feature_viz(self, grp_key, stacked, title, ylabel, xlabel)`:
-    - helper method for `plot_demographics` and `plot_ticket_purchasing_patterns` functions below to plot Multi-bar plot visualizations of cluster feature VS. cluster ID 
+    - helper method for `plot_demographics` and `plot_ticket_purchasing_patterns` functions below to plot Multi-bar plot visualizations of cluster feature VS. cluster ID
 
   - `plot_cluster_size(self)`:
     - plot number of riders vs. cluster ID on a static bar chart
 
-  - `plot_avg_num_trips(self)`: 
+  - `plot_avg_num_trips(self)`:
     - plot average number of trips vs. cluster ID on a static bar chart
-  
+
 
   - `plot_demographics(self, grp, stacked=True)`:
-    - plot either a "stacked" or "grouped" barchart showing the inferred cluster demographics distributions 
+    - plot either a "stacked" or "grouped" barchart showing the inferred cluster demographics distributions
     - the `grp` option specifies which type of demographics distribution to display. Options are ['race', 'emp', 'edu', 'inc'] for race, employment, education and income.
-  
+
   - `plot_ticket_purchasing_patterns(self, grp, stacked=True)`:
-    - plot either a "stacked" or "grouped" barchart showing cluster ticket purchasing patterns
-    - the `grp` option specifies which type of ticket purchasing habtit to display. Options are ['servicebrand', 'usertype', 'tariff'] for service brand (e.g. Rapid Transit), user type (e.g. Adult or Student), and tariff type (e.g. Monthly Pass).
+    - plot either a "stacked" or "grouped" bar chart showing cluster ticket purchasing patterns
+    - the `grp` option specifies which type of ticket purchasing habit to display. Options are ['servicebrand', 'usertype', 'tariff'] for service brand (e.g. Rapid Transit), user type (e.g. Adult or Student), and tariff type (e.g. Monthly Pass).
 
 ## Auto Report Generator
 

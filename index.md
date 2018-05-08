@@ -114,7 +114,7 @@ A brief item description for ```MBTAriderSegmentation```:
 
 - `profile.py` module profiles the clusters by summarizing cluster pattern-of-use features, inferring cluster demographics distributions as well as calling `report.py` module to produce a short descriptive text for each cluster. The cluster profiles are saved in the `data/cached_profiles/` directory.
 
-- `report.py` module handles automatic report generation. It is called by `profile.py`, and its results are appened as a an additional column to the cluster profiles data frame that is eventually saved in the `data/cached_profiles/` directory.
+- `report.py` module handles automatic report generation. It is called by `profile.py`, and its results are appended as a an additional column to the cluster profiles data frame that is eventually saved in the `data/cached_profiles/` directory.
 
 - `visualization.py` module contains functions to generate various static visualizations to explore the clusters in python.
 
