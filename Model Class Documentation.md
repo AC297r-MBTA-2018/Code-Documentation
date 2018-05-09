@@ -358,7 +358,7 @@ A `Visualization` object visualizes the cluster profiles in various types of vis
 
 ### Class `ReportGenerator`
 
-A `ReportGenerator` object is initialized in a `ClusterProfiler` object. It generates a text summary for each cluster based on the output of the `ClusterProfiler` that contains it and a pre-trained (and retrainable) 7x24 temporal pattern classification Convolutional Neural Network (CNN) Model.
+A `ReportGenerator` object is initialized in a `ClusterProfiler` object. It generates a text summary for each cluster based on the output of the `ClusterProfiler` that contains it and a pre-trained (and retrainable) Convolutional Neural Network (CNN) model for the 7x24 temporal pattern classification.
 
 - **Attributes**:
   - `n_classes`: an integer indicating the number of different types of riders to classify
